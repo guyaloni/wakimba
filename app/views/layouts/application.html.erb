@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wakimba</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+    <div class="container">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" class="active"><a href="#">Home</a></li>
+            <li role="presentation"><a href="#">About</a></li>
+            <li role="presentation"><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">
+        	<%= image_tag asset_path("logo-small.png"), :style => 'margin-top:-15px' %>wakimba
+        </h3>
+      </div>
+
+			<%= yield %>
+
+      <footer class="footer">
+        <p>&copy; 2016 Wakimba</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+
+</body>
+</html>
