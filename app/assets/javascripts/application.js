@@ -17,3 +17,6 @@
 //= require bootstrap
 
 //= require_tree .
+
+//= require jquery-fileupload/basic
+

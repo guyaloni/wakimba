@@ -22,5 +22,7 @@ module Wakimba
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    Rails.application.config.middleware.use JQuery::FileUpload::Rails::Middleware    
   end
 end
