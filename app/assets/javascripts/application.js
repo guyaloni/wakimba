@@ -20,3 +20,4 @@
 
 //= require jquery-fileupload/basic
 
+//= require social-share-button

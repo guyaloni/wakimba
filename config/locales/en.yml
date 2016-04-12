@@ -26,3 +26,5 @@ en:
       launcher:
         upload_new_image: "Upload new image"
         delete: "Delete"
+  social_share_button:
+    share_to: "Share To"

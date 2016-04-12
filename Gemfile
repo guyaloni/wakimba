@@ -48,4 +48,4 @@ end
 gem 'simple_form'
 gem "jquery-fileupload-rails"
 gem "paperclip"
-
+gem 'social-share-button'
