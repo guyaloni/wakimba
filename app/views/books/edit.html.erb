@@ -1,5 +1,8 @@
 <h1>Editing Book</h1>
 
+<%= render 'shared/image_uploader/launcher', :uploader_info => @book_cover_image_uploader_info %>
+<%= render 'shared/image_uploader/modal', :uploader_info => @book_cover_image_uploader_info %>
+
 <%= render 'form' %>
 
 <%= link_to 'Show', @book %> |

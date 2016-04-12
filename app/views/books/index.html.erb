@@ -2,7 +2,7 @@
 
 <h1>Listing Books</h1>
 
-<table>
+<table class="table table-striped">
   <thead>
     <tr>
       <th>Title</th>
@@ -11,9 +11,10 @@
     </tr>
   </thead>
 
-  <tbody>
+  <tbody >
     <% @books.each do |book| %>
       <tr>
+        <td><%= image_tag(book.cover_image(:thumb)) %></td>
         <td><%= book.title %></td>
         <td><%= book.author %></td>
         <td><%= link_to 'Show', book %></td>

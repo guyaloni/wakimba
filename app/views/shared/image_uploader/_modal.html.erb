@@ -1,0 +1,105 @@
+<div class="modal fade" id="<%= "#{uploader_info[:id]}_modal" %>" tabindex="-1" role="dialog" aria-labelledby="<%= "#{uploader_info[:id]}_label" %>" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="<%= "#{uploader_info[:id]}_label" %>">
+            <%= t(".select_file") %>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <%= raw(uploader_info[:hint]) %>
+        <%= simple_form_for uploader_info[:object], :wrapper => 'form_horizontal',
+            :url => uploader_info[:upload_url],
+            :html => { :id => "#{uploader_info[:id]}_upload_form", 
+                       :class => 'form-horizontal', :multipart => true } do |f| %>
+                       
+                <%= hidden_field_tag :object_name, uploader_info[:object].class.name %>
+                <%= hidden_field_tag :object_id, uploader_info[:object].id %>
+
+                <% if !uploader_info[:hidden_fields].blank? %>
+                    <% uploader_info[:hidden_fields].each do |field_name, field_value| %>
+                        <%= hidden_field_tag field_name, field_value %>
+                    <% end %>
+                <% end%>
+                
+
+                <div class="clearfix clearboth">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="btn btn-primary fileinput-button">
+                        <i class="icon-plus icon-white"></i>
+                        <span><%= t(".select_file") %></span>
+                        <%= f.file_field uploader_info[:image_attr] %>
+                    </span>
+                </div>
+        <% end %>
+
+        <div class="spacer"></div>
+        <div class="progress hidden" id="<%= "#{uploader_info[:id]}_progress" %>">
+          <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+            <span class="sr-only">0% Complete</span>
+          </div>
+        </div>
+        <div class="alert alert-danger hidden" id="<%= "#{uploader_info[:id]}_error" %>">
+            
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="<%= "#{uploader_info[:id]}_btn_cancel" %>" data-dismiss="modal">
+            <%= t(".cancel") %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function () {
+    $('.hidden').hide().removeClass('hidden');
+
+    $('<%= "##{uploader_info[:id]}_upload_form" %>').fileupload({
+        dataType: 'json',
+        progressall: function (e, data) {
+            $('#<%= "#{uploader_info[:id]}_error" %>').hide();
+            var bar_id = '<%= "##{uploader_info[:id]}_progress" %>';
+            $(bar_id).show();
+            
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $(bar_id + ' .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        },
+        done: function (e, data) {
+            $('<%= "##{uploader_info[:id]}_holder" %>').attr('src', data.result.file).show('fast');
+            $('#<%= "btn_delete_#{uploader_info[:id]}" %>').show('fast');
+
+            var bar_id = '<%= "##{uploader_info[:id]}_progress" %>';
+            $(bar_id).hide();
+            $(bar_id + ' .progress-bar').css(
+                'width', '0%'
+            );
+            $('<%= "##{uploader_info[:id]}_btn_cancel" %>').trigger( "click" );
+
+            <% if uploader_info[:upload_success_callback] %>
+                <%= "#{uploader_info[:upload_success_callback]}(data.result);" %>
+            <% end %>
+            
+        },
+        error: function(e, data) {
+            console.log(e, data);
+            var bar_id = '<%= "##{uploader_info[:id]}_progress" %>';
+            $(bar_id).hide();
+            $(bar_id + ' .progress-bar').css(
+                'width', '0%'
+            );            
+            $('#<%= "#{uploader_info[:id]}_error" %>').show().html(e.responseJSON.join('<br>'));
+        }
+    });
+
+    $('#<%= "#{uploader_info[:id]}_btn_cancel" %>').click(function() {
+        $('#<%= "#{uploader_info[:id]}_error" %>').hide().html('');
+
+    });
+});
+</script>

@@ -21,3 +21,8 @@
 
 en:
   hello: "Hello world"
+  shared:
+    image_uploader:
+      launcher:
+        upload_new_image: "Upload new image"
+        delete: "Delete"

@@ -1,5 +1,5 @@
 class BooksController < ApplicationController
-  before_action :set_book, only: [:show, :edit, :update, :destroy]
+  before_action :set_book, only: [:show, :edit, :update, :destroy, :upload_cover_image, :delete_cover_image]
 
   # GET /books
   # GET /books.json
@@ -19,6 +19,19 @@ class BooksController < ApplicationController
 
   # GET /books/1/edit
   def edit
+    @book_cover_image_uploader_info = {
+      :id => 'book_cover_image',
+      :label => "Book cover image",
+      :hint => "Some hint",
+      :current_image => @book.cover_image,
+      :current_image_url => @book.cover_image.url(:thumb),
+      :delete_image_url => book_delete_cover_image_path(@book),
+      :delete_confirmation => "Delete warning",
+      :object => @book,
+      :image_attr => :cover_image,
+      :upload_url => book_upload_cover_image_path(@book),
+    }
+
   end
 
   # POST /books
@@ -61,10 +74,44 @@ class BooksController < ApplicationController
     end
   end
 
+
+  def upload_cover_image
+    @book.cover_image = params[:book][:cover_image]
+
+    respond_to do |format|
+      if @book.save
+        format.html do
+          render :json => @book.cover_image.url(:thumb).to_json,
+                 :content_type => 'text/html',
+                 :layout => false
+        end
+        format.json { render json: {file: @book.cover_image.url(:thumb)}, status: :created}
+      else
+        # delete duplicated file size error message
+        if @book.errors[:cover_image_file_size] == @book.errors[:cover_image]
+          @book.errors.delete(:cover_image)
+        end
+
+        format.html { render action: "new" }
+        format.json { render json: @book.errors.full_messages, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def delete_cover_image
+    @book.cover_image = nil
+    if @book.save
+      render json: 'cover image deleted', status: status
+    else
+      render json: 'Failed to delete cover image', status: :internal_server_error
+    end
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book
-      @book = Book.find(params[:id])
+      @book = Book.find(params[:book_id]) 
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

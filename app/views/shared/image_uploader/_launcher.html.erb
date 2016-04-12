@@ -1,0 +1,47 @@
+<div class="clearfix clearboth">
+	<label class="col-sm-3 control-label">
+		<%= uploader_info[:label] %>
+	</label>
+	
+	<div class="controls top-padded col-sm-9">
+		<span>
+		 	<% if uploader_info[:current_image].exists? %>
+		 		<%= image_tag uploader_info[:current_image_url],
+		 					:id => "#{uploader_info[:id]}_holder", :class => 'img-thumbnail' %>
+			<% else %>
+		 		<%= image_tag uploader_info[:current_image_url],
+		 					:id => "#{uploader_info[:id]}_holder", :class => 'img-thumbnail hidden' %>
+			<% end %>
+
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#<%= "#{uploader_info[:id]}_modal" %>">
+ 				<%= t('.upload_new_image') %>
+			</button>
+
+		 	
+			<%= link_to uploader_info[:delete_image_url], 
+					:id => "btn_delete_#{uploader_info[:id]}",
+					:class => (uploader_info[:current_image].exists? ? "danger" : "danger hidden"), 
+					:method => :post, :remote => true, 
+					:title => t(".delete"),
+					:data => { confirm: uploader_info[:delete_confirmation] } do %>
+					<span class="glyphicon glyphicon-trash alert-danger" style="margin-left:10px"></span>
+			<% end %>
+
+		</span>
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+	$('#<%= "btn_delete_#{uploader_info[:id]}" %>').bind("ajax:complete", function(xhr, res) {
+		switch(res.status) {
+     	case 200:
+     		$('#<%= "#{uploader_info[:id]}_holder" %>').hide('fast');
+     		$('#<%= "btn_delete_#{uploader_info[:id]}" %>').hide('fast');
+       	break;
+      default:
+      	console.error(res.responseText)
+      }
+	});
+});
+</script>
